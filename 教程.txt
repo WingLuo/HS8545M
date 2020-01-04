@@ -1,0 +1,52 @@
+补全教程  先使用最新版可破解R017   
+拔掉光纤线   关机重启  开机之后 打开先使用最新版可破解R017 
+选择维修使能  主/备模式  然后启动   这时候光猫就开始闪烁了
+等到当前总数为1  然后停止  重启光猫 这时候就开启了 telnet 
+在使用最新版可破解R017   点击升级  导入allshell2.bin allshell4.bin
+然后点击启动  光猫灯都不亮的时候点击停止 
+俩个文件需要刷俩次   都操作完之后
+win+R 打开   对话框复制咱贴  telnet 192.168.1.1
+账号root
+密码adminHW
+输入 su
+输入 shell
+输入 cd /mnt/jffs2
+执行restorehwmode.sh   恢复原厂界面
+输入 ls 就可以看到  hw_ctree.xml
+打开tftp32 选择导出目录 确定之后
+输入tftp -p -l hw_ctree.xml -r hw_ctree.xml 192.168.1.2
+输入完成之后就可以看到配置文件了
+配置文件是加密的  使用 配置文件解密工具.exe 
+
+以下操作均在xshell中完成，不是使用CMD破窗口，所以你得先安装一个xshell，透过日志记录获取想要的内容；
+
+普通模式查看命令：
+查看光功率：WAP>display optic
+查看语音接口状态：WAP>spa display mg info
+查看设备版本:WAP>display version
+查看SN: WAP>display sn
+查看ONT端口vlan信息: WAP>get port vlan portid 1 vlan al
+查看ONT gemport信息: WAP>display flow id all
+
+ 
+
+xshell操作模式
+用xshell操作，操作日志指定位置，这样一来所有终端窗口中显示过的内容都能在日志中找得到；
+shell ###顾名思义切换到xshell模式
+telnet://192.168.1.1:23 账号root 密码admin
+
+cd /mnt/jffs2 ###配置文件在这个目录下的hw_ctree.xml中
+
+ 
+
+hw_ctree.xml加密了不能直接查看内容，通过下面的模式能搞定内容解密
+cp hw_ctree.xml myconf.xml.gz
+aescrypt2 1 myconf.xml.gz tmp
+gzip -d myconf.xml.gz
+
+最后得到解密的myconf.xml文件
+只看超级密码命令：grep telecomadmin myconf.xml
+如果要获取所有内容vi myconf.xml 打开一次 退出编辑不保存 然后所有的内容都在xshell操作日志中了；
+
+
+tftp -p -l myconf.xml -r myconf.xml 192.168.1.10
